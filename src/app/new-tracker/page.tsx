@@ -1,5 +1,5 @@
 import React from 'react';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/libs/prisma';
 
 const NewTracker = async () => {
   const loans = await prisma.loan.findMany();

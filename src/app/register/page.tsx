@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/libs/prisma';
 const RegisterPage = async () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
