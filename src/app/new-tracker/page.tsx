@@ -1,11 +1,15 @@
-import React from 'react';
-import { prisma } from '@/libs/prisma';
+import { Button } from '@/components/ui/button';
+import LoanForm from '../components/LoanForm';
 
 const NewTracker = async () => {
-  const loans = await prisma.loan.findMany();
-
-  console.log(loans);
-  return <div>{loans.length}</div>;
+  /*   const router = useRouter(); */
+  return (
+    <div>
+      <h1>New Tracker</h1>
+      <LoanForm />
+      {/*  <Button onClick={() => router.back()}>Volver</Button> */}
+    </div>
+  );
 };
 
 export default NewTracker;
