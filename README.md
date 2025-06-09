@@ -1,5 +1,9 @@
 # Rastreador de Préstamos
 
+Visita la página web en:
+
+[https://loan-tracker-nine.vercel.app/](https://loan-tracker-nine.vercel.app/)
+
 Una aplicación web moderna para rastrear y gestionar préstamos, construida con Next.js, React y Prisma.
 
 ## Características
@@ -89,15 +93,3 @@ loan-tracker/
 ├── public/          # Archivos estáticos
 └── components/      # Componentes React
 ```
-
-## Contribuir
-
-1. Haz un fork del repositorio
-2. Crea tu rama de características (`git checkout -b feature/amazing-feature`)
-3. Haz commit de tus cambios (`git commit -m 'Add amazing feature'`)
-4. Haz push a la rama (`git push origin feature/amazing-feature`)
-5. Abre un Pull Request
-
-## Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
