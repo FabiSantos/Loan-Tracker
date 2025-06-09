@@ -1,81 +1,70 @@
--- CreateTable
-CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "password_hash" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+generator client {
+  provider = "prisma-client-js"
+}
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
--- CreateTable
-CREATE TABLE "Loan" (
-    "id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "recipient_name" TEXT NOT NULL,
-    "item_name" TEXT NOT NULL,
-    "description" TEXT,
-    "quantity" INTEGER NOT NULL,
-    "borrowed_at" TIMESTAMP(3) NOT NULL,
-    "return_by" TIMESTAMP(3) NOT NULL,
-    "returned_at" TIMESTAMP(3),
-    "state_start" TEXT NOT NULL,
-    "state_end" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password_hash String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
-    CONSTRAINT "Loan_pkey" PRIMARY KEY ("id")
-);
+  loans          Loan[]
+  passwordResets PasswordReset[]
+}
 
--- CreateTable
-CREATE TABLE "LoanPhoto" (
-    "id" TEXT NOT NULL,
-    "loan_id" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
-    "uploaded_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "type" TEXT NOT NULL,
+model Loan {
+  id             String    @id @default(uuid())
+  user_id        String
+  recipient_name String
+  item_name      String
+  description    String?
+  quantity       Int
+  borrowed_at    DateTime
+  return_by      DateTime
+  returned_at    DateTime?
+  state_start    String
+  state_end      String?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
 
-    CONSTRAINT "LoanPhoto_pkey" PRIMARY KEY ("id")
-);
+  user         User          @relation(fields: [user_id], references: [id])
+  photos       LoanPhoto[]
+  reminderLogs ReminderLog[]
+}
 
--- CreateTable
-CREATE TABLE "ReminderLog" (
-    "id" TEXT NOT NULL,
-    "loan_id" TEXT NOT NULL,
-    "sent_to" TEXT NOT NULL,
-    "subject" TEXT NOT NULL,
-    "sent_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+model LoanPhoto {
+  id          String   @id @default(uuid())
+  loan_id     String
+  url         String
+  uploaded_at DateTime @default(now())
+  type        String
 
-    CONSTRAINT "ReminderLog_pkey" PRIMARY KEY ("id")
-);
+  loan Loan @relation(fields: [loan_id], references: [id])
+}
 
--- CreateTable
-CREATE TABLE "PasswordReset" (
-    "id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
-    "expires_at" TIMESTAMP(3) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "used_at" TIMESTAMP(3),
+model ReminderLog {
+  id      String   @id @default(uuid())
+  loan_id String
+  sent_to String
+  subject String
+  sent_at DateTime @default(now())
 
-    CONSTRAINT "PasswordReset_pkey" PRIMARY KEY ("id")
-);
+  loan Loan @relation(fields: [loan_id], references: [id])
+}
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+model PasswordReset {
+  id         String    @id @default(uuid())
+  user_id    String
+  token      String    @unique
+  expires_at DateTime
+  created_at DateTime  @default(now())
+  used_at    DateTime?
 
--- CreateIndex
-CREATE UNIQUE INDEX "PasswordReset_token_key" ON "PasswordReset"("token");
-
--- AddForeignKey
-ALTER TABLE "Loan" ADD CONSTRAINT "Loan_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "LoanPhoto" ADD CONSTRAINT "LoanPhoto_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "Loan"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ReminderLog" ADD CONSTRAINT "ReminderLog_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "Loan"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PasswordReset" ADD CONSTRAINT "PasswordReset_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+  user User @relation(fields: [user_id], references: [id])
+}
