@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
+import { useRouter } from 'next/navigation';
 interface Loan {
   id: string;
   item_name: string;
@@ -32,6 +32,7 @@ const deleteLoan = async (id: string): Promise<void> => {
 };
 
 const Dashboard = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const {
@@ -51,34 +52,67 @@ const Dashboard = () => {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading loans</div>;
+  if (isLoading) return <div>Cargando préstamos...</div>;
+  if (error) return <div>Error al cargar los préstamos</div>;
 
   return (
-    <div className='flex flex-col gap-4'>
-      {loans.map((loan) => (
-        <div key={loan.id}>
-          <div>
-            <h2>{loan.item_name}</h2>
-            <p>{loan.description}</p>
-            <p>{loan.quantity}</p>
-            <p>{loan.borrowed_at}</p>
-            <p>{loan.return_by}</p>
-            <p>{loan.state_start}</p>
-            <p>{loan.state_end}</p>
-            <p>{loan.recipient_name}</p>
-          </div>
-          <div className='flex gap-x-2'>
-            <Button>Editar</Button>
-            <Button
-              onClick={() => deleteMutation.mutate(loan.id)}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar'}
-            </Button>
-          </div>
-        </div>
-      ))}
+    <div className='p-4'>
+      <Button
+        onClick={() => router.push('/new-tracker')}
+        className='mb-4 flex justify-end items-center cursor-pointer'
+      >
+        Crear nuevo préstamo
+      </Button>
+      <h1 className='text-2xl font-semibold mb-4'>Lista de Préstamos</h1>
+      <div className='overflow-x-auto'>
+        <table className='min-w-[1000px] w-full table-auto border border-gray-200 rounded-md shadow-sm'>
+          <thead className='bg-gray-100 text-sm text-gray-700'>
+            <tr>
+              <th className='px-4 py-2 text-left'>Ítem</th>
+              <th className='px-4 py-2 text-left'>Descripción</th>
+              <th className='px-4 py-2 text-left'>Cantidad</th>
+              <th className='px-4 py-2 text-left'>Prestado en</th>
+              <th className='px-4 py-2 text-left'>Devolver antes</th>
+              <th className='px-4 py-2 text-left'>Estado Inicial</th>
+              <th className='px-4 py-2 text-left'>Estado Final</th>
+              <th className='px-4 py-2 text-left'>Destinatario</th>
+              <th className='px-4 py-2 text-left'>Acciones</th>
+            </tr>
+          </thead>
+          <tbody className='text-sm'>
+            {loans.map((loan) => (
+              <tr key={loan.id} className='border-t border-gray-200'>
+                <td className='px-4 py-2'>{loan.item_name}</td>
+                <td className='px-4 py-2'>{loan.description}</td>
+                <td className='px-4 py-2'>{loan.quantity}</td>
+                <td className='px-4 py-2'>{loan.borrowed_at}</td>
+                <td className='px-4 py-2'>{loan.return_by}</td>
+                <td className='px-4 py-2'>{loan.state_start}</td>
+                <td className='px-4 py-2'>{loan.state_end}</td>
+                <td className='px-4 py-2'>{loan.recipient_name}</td>
+                <td className='px-4 py-2'>
+                  <div className='flex flex-col sm:flex-row gap-2'>
+                    <Button
+                      size='sm'
+                      onClick={() => router.push(`/dashboard/edit/${loan.id}`)}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      size='sm'
+                      variant='destructive'
+                      onClick={() => deleteMutation.mutate(loan.id)}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar'}
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

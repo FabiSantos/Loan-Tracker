@@ -71,8 +71,7 @@ const LoanForm = () => {
   };
   return (
     <div>
-      <h1>Formulario de Préstamo</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4 pt-4'>
         <Input
           type='text'
           name='item_name'

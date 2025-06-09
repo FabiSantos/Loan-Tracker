@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rastreador de Préstamos
 
-## Getting Started
+Una aplicación web moderna para rastrear y gestionar préstamos, construida con Next.js, React y Prisma.
 
-First, run the development server:
+## Características
+
+- 🔐 Sistema de autenticación seguro
+- 💰 Seguimiento y gestión de préstamos
+- 📊 Panel de control con estadísticas de préstamos
+- 🌙 Soporte para modo oscuro/claro
+- 📱 Diseño responsivo
+- 🔍 Búsqueda avanzada y filtrado
+- 📈 Actualizaciones en tiempo real
+
+## Tecnologías
+
+- **Framework:** Next.js 15
+- **Lenguaje:** TypeScript
+- **Base de datos:** SQL con Prisma ORM
+- **Estilos:** Tailwind CSS
+- **Gestión de estado:** React Query
+- **Manejo de formularios:** React Hook Form + Zod
+- **Componentes UI:** Radix UI
+- **Autenticación:** JWT + bcrypt
+
+## Comenzando
+
+### Prerrequisitos
+
+- Node.js 20+
+- pnpm (recomendado) o npm
+
+### Instalación
+
+1. Clona el repositorio:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/FabiSantos/Loan-Tracker
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Instala las dependencias:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+pnpm create next-app loan-tracker --ts --tailwind --app
+cd loan-tracker
 
-## Learn More
+pnpm dlx shadcn-ui@latest init
 
-To learn more about Next.js, take a look at the following resources:
+pnpm add lucide-react class-variance-authority tailwind-merge @tanstack/react-query better-sqlite3 prisma @prisma/client
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Configura la base de datos:
 
-## Deploy on Vercel
+```bash
+npx prisma init --datasource-provider sqlite
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+pnpm prisma db push
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+````archivo .env:
+
+DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/tu_basededatos"
+
+
+4. Inicia el servidor de desarrollo:
+
+```bash
+pnpm dev
+````
+
+La aplicación estará disponible en `http://localhost:3000`
+
+## Scripts Disponibles
+
+- `pnpm dev` - Inicia el servidor de desarrollo con Turbopack
+- `pnpm build` - Construye para producción
+- `pnpm start` - Inicia el servidor de producción
+- `pnpm lint` - Ejecuta ESLint
+
+## Estructura del Proyecto
+
+```
+loan-tracker/
+├── src/              # Archivos fuente
+├── prisma/          # Esquema y migraciones de la base de datos
+├── public/          # Archivos estáticos
+└── components/      # Componentes React
+```
+
+## Contribuir
+
+1. Haz un fork del repositorio
+2. Crea tu rama de características (`git checkout -b feature/amazing-feature`)
+3. Haz commit de tus cambios (`git commit -m 'Add amazing feature'`)
+4. Haz push a la rama (`git push origin feature/amazing-feature`)
+5. Abre un Pull Request
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para más detalles.

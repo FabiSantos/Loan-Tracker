@@ -27,7 +27,6 @@ export async function POST(request: Request) {
       state_start,
       state_end,
       recipient_name,
-      user_id,
     } = body;
 
     if (
