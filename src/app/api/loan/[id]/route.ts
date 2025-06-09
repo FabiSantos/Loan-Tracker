@@ -1,62 +1,78 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/libs/prisma';
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/libs/prisma'
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
+// GET: Obtener préstamo por ID
 
-export async function GET(request: NextRequest, context: Props) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(_req: NextRequest, context: any) {
+  const id = context.params.id
   try {
-    const loan = await prisma.loan.findFirst({ 
-      where: { id: context.params.id } 
-    });
-    return NextResponse.json(loan);
+    const loan = await prisma.loan.findFirst({
+      where: { id },
+    })
+    return NextResponse.json(loan)
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Error interno del servidor' },
+      { status: 500 }
+    )
   }
 }
 
-export async function DELETE(request: NextRequest, context: Props) {
+// DELETE: Eliminar préstamo por ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(_req: NextRequest, context: any) {
+  const id = context.params.id
   try {
-    const deleteLoan = await prisma.loan.delete({ 
-      where: { id: context.params.id } 
-    });
-    return NextResponse.json(deleteLoan);
+    const deleted = await prisma.loan.delete({
+      where: { id },
+    })
+    return NextResponse.json(deleted)
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Error interno del servidor' },
+      { status: 500 }
+    )
   }
 }
 
-export async function PUT(request: NextRequest, context: Props) {
+// PUT: Actualizar préstamo
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PUT(req: NextRequest, context: any) {
+  const id = context.params.id
   try {
-    const { item_name, description, quantity, borrowed_at, return_by, state_start, state_end, recipient_name, user_id } = await request.json();
-    const updateLoan = await prisma.loan.update({ 
-      where: { id: context.params.id }, 
-      data: { 
-        item_name, 
-        description, 
-        quantity, 
-        borrowed_at, 
-        return_by, 
-        state_start, 
-        state_end, 
-        recipient_name, 
-        user_id 
-      } 
-    });
-    return NextResponse.json(updateLoan);
+    const {
+      item_name,
+      description,
+      quantity,
+      borrowed_at,
+      return_by,
+      state_start,
+      state_end,
+      recipient_name,
+      user_id,
+    } = await req.json()
+
+    const updated = await prisma.loan.update({
+      where: { id },
+      data: {
+        item_name,
+        description,
+        quantity,
+        borrowed_at: new Date(borrowed_at),
+        return_by: new Date(return_by),
+        state_start,
+        state_end,
+        recipient_name,
+        user_id,
+      },
+    })
+
+    return NextResponse.json(updated)
   } catch (error) {
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Error interno del servidor' },
+      { status: 500 }
+    )
   }
 }
