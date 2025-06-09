@@ -1,9 +1,5 @@
 # Rastreador de Préstamos
 
-Visita la página web en:
-
-[https://loan-tracker-nine.vercel.app/](https://loan-tracker-nine.vercel.app/)
-
 Una aplicación web moderna para rastrear y gestionar préstamos, construida con Next.js, React y Prisma.
 
 ## Características
