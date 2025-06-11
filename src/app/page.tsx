@@ -1,5 +1,4 @@
-import { LoginForm } from './components/login-form';
-import { ModeToggle } from './components/modeToggle';
+import { LoginForm } from './components/LoginForm';
 
 export default async function Home() {
   return (
@@ -10,7 +9,7 @@ export default async function Home() {
         </div>
       </div>
       <div className='flex items-center justify-center pt-10 mt-10'>
-        <ModeToggle />
+
       </div>
     </>
   );

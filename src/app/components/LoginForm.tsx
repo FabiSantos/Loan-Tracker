@@ -3,23 +3,25 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/libs/utils';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/app/components/ui/card';
+import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
+import { useCapitalize } from '@/hooks/useCapitalize';
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const { value: email, setCapitalizedValue: setEmail } = useCapitalize('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

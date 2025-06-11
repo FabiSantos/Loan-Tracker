@@ -1,7 +1,9 @@
 'use client';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/app/components/ui/button';
+import { Checkbox } from '@/app/components/ui/checkbox';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+
 interface Loan {
   id: string;
   item_name: string;
@@ -20,6 +22,16 @@ const fetchLoans = async (): Promise<Loan[]> => {
     throw new Error('Network response was not ok');
   }
   return response.json();
+};
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
 };
 
 const deleteLoan = async (id: string): Promise<void> => {
@@ -48,9 +60,18 @@ const Dashboard = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteLoan,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['loans'] });
+      queryClient.setQueryData(['loans'], (oldData: Loan[] | undefined) => {
+        if (!oldData) return [];
+        return oldData.filter(loan => loan.id !== deleteMutation.variables);
+      });
     },
   });
+
+  const handleDelete = (id: string) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este préstamo?')) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   if (isLoading) return <div>Cargando préstamos...</div>;
   if (error) return <div>Error al cargar los préstamos</div>;
@@ -85,8 +106,8 @@ const Dashboard = () => {
                 <td className='px-4 py-2'>{loan.item_name}</td>
                 <td className='px-4 py-2'>{loan.description}</td>
                 <td className='px-4 py-2'>{loan.quantity}</td>
-                <td className='px-4 py-2'>{loan.borrowed_at}</td>
-                <td className='px-4 py-2'>{loan.return_by}</td>
+                <td className='px-4 py-2'>{formatDate(loan.borrowed_at)}</td>
+                <td className='px-4 py-2'>{formatDate(loan.return_by)}</td>
                 <td className='px-4 py-2'>{loan.state_start}</td>
                 <td className='px-4 py-2'>{loan.state_end}</td>
                 <td className='px-4 py-2'>{loan.recipient_name}</td>
@@ -101,10 +122,12 @@ const Dashboard = () => {
                     <Button
                       size='sm'
                       variant='destructive'
-                      onClick={() => deleteMutation.mutate(loan.id)}
-                      disabled={deleteMutation.isPending}
+                      onClick={() => handleDelete(loan.id)}
+                      disabled={deleteMutation.isPending && deleteMutation.variables === loan.id}
                     >
-                      {deleteMutation.isPending ? 'Eliminando...' : 'Eliminar'}
+                      {deleteMutation.isPending && deleteMutation.variables === loan.id 
+                        ? 'Eliminando...' 
+                        : 'Eliminar'}
                     </Button>
                   </div>
                 </td>
